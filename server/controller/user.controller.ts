@@ -323,7 +323,8 @@ interface IUserAvatar {
 }
 
 // update profile picture
-export const updateProfilePicture = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+export const updateProfilePicture = CatchAsyncError(
+    async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { avatar } = req.body as IUserAvatar;
         const userId = req.user?._id 
