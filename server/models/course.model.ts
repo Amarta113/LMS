@@ -1,8 +1,9 @@
 import { timeStamp } from "console";
 import mongoose, { Document, Model, Schema } from "mongoose";
+import type { IUser } from "./user.model";
 
 interface IComment extends Document {
-    user: object,
+    user: IUser,
     question: string,
     questionReplies: IComment[]
 }
