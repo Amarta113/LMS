@@ -9,7 +9,7 @@ interface IComment extends Document {
 }
 
 interface IReview extends Document {
-    user: string,
+    user: IUser,
     product: string,
     rating: number,
     comment: string,
@@ -47,8 +47,8 @@ interface ICourse extends Document {
     prerequisites: { title: string }[];
     reviews: IReview[];
     courseData: ICourseData[];
-    rating?: string;
-    purchased: string;
+    ratings?: number;
+    purchased: number;
 }
 
 const reviewSchema = new Schema<IReview>({
@@ -82,7 +82,7 @@ const courseDataSchema = new Schema<ICourseData>({
     videoPlayer: String,
     links: [linkSchema],
     suggestion: String,
-    questions: [commentSchema],
+    question: [commentSchema],
 })
 
 const courseSchema = new Schema<ICourse>({
