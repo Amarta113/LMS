@@ -239,3 +239,58 @@ export const addAnswer = CatchAsyncError(async (req: Request, res: Response, nex
         return next(new ErrorHandler(error.message, 400))   
     }
 })
+
+// add review in course
+interface IAddReviewData {
+    review: string;
+    rating: number;
+}
+
+export const addReview = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try{
+        const userCourseList = req.user?.courses;
+        const courseId = req.params.id;
+
+        const courseExists = userCourseList?.some((course: any) => course._id.toString() === courseId.toString())
+        if(!courseExists){
+            return next(new ErrorHandler("You are not eligible to access this course!", 400))
+        }
+
+        const {review, rating} = req.body as IAddReviewData;
+        const course = await CourseModel.findById(courseId)
+        if(!course){
+            return next(new ErrorHandler("Course not found", 404))
+        }
+
+        const reviewData: any = {
+            user: req.user,
+            comment: review,
+            rating
+        }
+
+        course.reviews.push(reviewData)
+        let avg = 0
+        course.reviews.forEach((rev:any) => {
+            avg += rev.rating
+        })
+
+        if(course){
+            course.ratings = avg / course.reviews.length;
+        }
+
+        await course.save()
+
+        const notification = {
+            title: "New Review Received",
+            message: `${req.user?.name} has given a review on ${course?.name}`
+        }
+        
+        // create notification
+        res.status(200).json({
+            success: true,
+            course
+        })
+    } catch (error:any) {
+        return next(new ErrorHandler(error.message, 400))   
+    }
+})
