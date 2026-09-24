@@ -34,4 +34,4 @@ app.use((req:Request, res:Response, next:NextFunction) => {
     next(err)
 })
 
-app.use(ErrorMiddleware())
+app.use(ErrorMiddleware)
