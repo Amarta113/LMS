@@ -15,8 +15,8 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
     try {
         const {courseId, payment_info} = req.body as IOrder
         const user = await userModel.findById(req.user?._id)
-        const courseExistInUser = user?.courses.some((course: any) => course._id.toString() === courseId)
-        if(!courseExistInUser){
+        const courseExistInUser = user?.courses.some((course) => course.toString() === courseId)
+        if(courseExistInUser){
             return next(new ErrorHandler("You have already purchased this course", 400))
         }
         const course = await CourseModel.findById(courseId)
@@ -26,14 +26,15 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
 
         const data: any = {
             courseId: course._id,
-            userId: user?._id
+            userId: user?._id,
+            payment_info
         }
 
         newOrder(data, res, next)
 
         const mailData = {
             order: {
-                _id: course._id.slice(0, 6),
+                _id: String(course._id).slice(0, 6),
                 name: course.name,
                 price: course.price,
                 date: new Date().toLocaleDateString('en-US', {year: 'numeric', month: 'long', day:'numeric' })
@@ -60,6 +61,10 @@ export const createOrder = CatchAsyncError(async (req: Request, res: Response, n
             title: "New Order",
             message: `You have a new from ${course?.name}`
         })
+
+        course.purchased ? course.purchased += 1 : course.purchased
+        await course.save()
+
         res.status(201).json({
             success: true,
             order: course
