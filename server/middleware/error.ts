@@ -17,12 +17,12 @@ export default function ErrorMiddleware (err:any, req:Request, res:Response, nex
     
     if(err.name === 'JsonWebTokenError'){
         const message = `Json web token is invalid, try again`
-        err = new ErrorHandler(message, 500)
+        err = new ErrorHandler(message, 401)
     }
 
     if(err.name === 'TokenExpiredError'){
         const message = `Json web token is expired, try again`
-        err = new ErrorHandler(message, 400)
+        err = new ErrorHandler(message, 401)
     }
 
     res.status(err.statusCode).json({
