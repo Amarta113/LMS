@@ -118,9 +118,12 @@ export const getCourseByUser = CatchAsyncError(async (req: Request, res: Respons
     try {
         const userCourseList = req.user?.courses
         const courseId = req.params.id 
-        const courseExist = userCourseList?.find(
-            (course: any) => course._id.toString() === courseId)
-        if(courseExist){
+        if (!courseId || Array.isArray(courseId)) {
+            return next(new ErrorHandler("Course not found", 404))
+        }
+        const courseExist = userCourseList?.some(
+            (course) => course.toString() === courseId)
+        if(!courseExist){
             return next(new ErrorHandler("You are not eligible to access this course!", 404))
         }
         const course = await CourseModel.findById(courseId)
@@ -250,8 +253,11 @@ export const addReview = CatchAsyncError(async (req: Request, res: Response, nex
     try{
         const userCourseList = req.user?.courses;
         const courseId = req.params.id;
+        if (!courseId || Array.isArray(courseId)) {
+            return next(new ErrorHandler("Course not found", 404))
+        }
 
-        const courseExists = userCourseList?.some((course: any) => course._id.toString() === courseId.toString())
+        const courseExists = userCourseList?.some((course) => course.toString() === courseId.toString())
         if(!courseExists){
             return next(new ErrorHandler("You are not eligible to access this course!", 400))
         }
