@@ -9,9 +9,10 @@ import mongoose from "mongoose";
 import path from "path";
 import ejs from "ejs";
 import sendMail from "../utils/sendMail";
+import NotificationModel from "../models/notification.model";
 
 
-// upload 
+// upload course
 export const uploadCourse = CatchAsyncError(
     async (req: Request, res: Response, next: NextFunction) => {
         try {
@@ -167,6 +168,12 @@ export const addQuestion = CatchAsyncError(async (req: Request, res: Response, n
 
         // add this question to our course content
         courseContent.question.push(newQuestion)
+
+        await NotificationModel.create({
+            user: req.user?._id,
+            title: "New Question",
+            message: `You have a new question in ${courseContent.title}`
+        })
 
         // save the updated course
         await course?.save()
