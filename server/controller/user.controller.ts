@@ -1,6 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
-import userModel, { IUser } from "../models/user.model";
+import userModel, { type IUser } from "../models/user.model";
 import { ErrorHandler } from "../utils/ErrorHandler";
 import jwt, { type JwtPayload, type Secret } from 'jsonwebtoken'
 import ejs from 'ejs'
@@ -8,8 +8,8 @@ import path from "path";
 import sendMail from "../utils/sendMail";
 import { accessTokenOptions, refreshTokenOptions, sendToken } from "../utils/jwt";
 import { redis } from "../utils/redis";
-import { getUserById } from "../services/user.service";
-import cloudinary from "../utils/cloudinary.ts";
+import { getAllUsersService, getUserById } from "../services/user.service";
+import cloudinary from "../utils/cloudinary";
 
 
 interface IRegistrationBody {
@@ -360,5 +360,15 @@ export const updateProfilePicture = CatchAsyncError(
         });
     } catch (error: any) {
         return next(new ErrorHandler(error.message, 400))
+    }
+})
+
+// get all users --- only for admin
+export const getAllUsers = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        getAllUsersService(res);
+
+    } catch (error:any) {
+        return next(new ErrorHandler(error.message, 400))  
     }
 })
