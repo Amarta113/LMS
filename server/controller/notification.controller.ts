@@ -2,6 +2,7 @@ import NotificationModel from "../models/notification.model";
 import { CatchAsyncError } from "../middleware/catchAsyncError";
 import { ErrorHandler } from "../utils/ErrorHandler";
 import type { Request, Response, NextFunction } from "express";
+import cron from "node-cron";
 
 // get all notifications -- only admin
 export const getNotifications = CatchAsyncError(async (req: Request, res: Response, next: NextFunction) => {
@@ -26,7 +27,6 @@ export const updateNotification = CatchAsyncError(async (req: Request, res: Resp
             notification.status ? notification.status = 'read' : notification?.status;
         }
         await notification.save()
-
         const notifications = await NotificationModel.find().sort({createdAt: -1})
         res.status(201).json({
             success : true,
@@ -36,3 +36,15 @@ export const updateNotification = CatchAsyncError(async (req: Request, res: Resp
         return next(new ErrorHandler(error.message, 400))  
     }
 })
+
+// delete notification -- only admin
+cron.schedule("0 0 0 * * *", async function (){
+    const thirdDaysAgo = new Date(Date.now() - 30 + 2)
+    await NotificationModel.deleteMany({
+        status: "read",
+        createdAt: {
+            $lt: thirdDaysAgo
+        }
+    })
+    console.log("Read Notifications Deleted!")
+}) 
