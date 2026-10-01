@@ -8,7 +8,7 @@ import userRouter from './routes/user.route';
 import courseRouter from './routes/course.route';
 import orderRouter from './routes/order.route';
 import notificationRouter from './routes/notification.route';
-
+import anaylticsRouter from './routes/analytics.route';
 
 export const app = express()
 
@@ -20,7 +20,7 @@ app.use(cors({
     origin: process.env.ORIGIN
 }))
 
-app.use('/api/v1', userRouter, orderRouter, courseRouter, notificationRouter)
+app.use('/api/v1', userRouter, orderRouter, courseRouter, notificationRouter, anaylticsRouter)
 
 app.get("/test", (req:Request, res:Response, next:NextFunction) => {
     res.status(200).json({
