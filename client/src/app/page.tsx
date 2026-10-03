@@ -1,6 +1,29 @@
+'use client'
+import React, { FC, useState } from "react";
+import Heading from "./utils/Headings";
+import Header from "./components/Header";
 
-export default function Home() {
+
+interface Props { }
+
+const Page: FC<Props> = (props) => {
+  const [open, setOpen] = useState(false)
+  const [activeItem, setActiveItem] = useState(0)
+
   return (
-    <div></div>
-  );
+    <div>
+      <Heading
+        title="Core"
+        description="Core is platform for students to learn and get help from exprience Top Engineers."
+        keywords="Programming, MERN, AI, Machine Learning"
+      />
+      <Header
+        open={open}
+        setOpen={setOpen}
+        activeItem={activeItem}
+      />
+    </div>
+  )
 }
+
+export default Page;
