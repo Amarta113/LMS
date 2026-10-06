@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Poppins, Josefin_Sans } from 'next/font/google';
 import "./globals.css";
 import { ThemeProvider } from './utils/theme-provider';
+import { SessionProvider } from "next-auth/react";
+
 
 const poppin = Poppins({
   subsets: ["latin"],
@@ -20,9 +22,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${poppin.variable} ${josefin.variable} !bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
     >
-      <body className="min-h-full flex flex-col">
+      <body
+        className={`${poppin.variable} ${josefin.variable} bg-white bg-no-repeat dark:bg-gradient-to-b dark:from-gray-900 dark:to-black duration-300`}
+      >
+        
         <ThemeProvider attribute='class' defaultTheme="system" enableSystem>
           {children}
         </ThemeProvider>
