@@ -24,6 +24,14 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
             }
         })
     }
+
+    const handleClose = (e: any) => {
+        if (e.target.id === "screen") {
+            {
+                setOpenSidebar(false)
+            }
+        }
+    }
     return (
         <div className='w-full relative'>
             <div className={`${active ? "dark:bg-opacity-50 dark:bg-gradient-to-b dark:from-gray-900 dark:to-black fixed top-0 left-0 w-full h-[80px] z-[80px] border-b dark:border-[#ffffff1c] shadow-xl transition duration-500" :
@@ -52,12 +60,35 @@ const Header: FC<Props> = ({ activeItem, setOpen }) => {
                             </div>
                             <HiOutlineUserCircle
                                 size={25}
-                                className='cursor-pointer dark:text-white text-black'
+                                className='hidden md:block cursor-pointer dark:text-white text-black'
                                 onClick={() => setOpenSidebar(true)}
                             />
                         </div>
                     </div>
                 </div>
+                {/* mobile sidebar */}
+                {
+                    openSidebar && (
+                        <div className="fixed w-full h-screen top-0 left-0 z-[999999] dark:bg-[#00000024]"
+                            onClick={handleClose}
+                            id='screen'
+                        >
+                            <div className="w-[70%] fixed z-[999999999] h-screen bg-white dark:bg-slate-900 dark:bg-opacity-90 top-0 right-0">
+                                <NavItems activeItem={activeItem} isMobile={true} />
+                                <HiOutlineUserCircle
+                                    size={25}
+                                    className='cursor-pointer ml-5 my-2 text-black dark:text-white'
+                                    onClick={() => setOpen(true)}
+                                />
+                                <br />
+                                <br />
+                                <p className="text-[16px] px-5 mt-6 text-black dark:text-white">
+                                    Copyright &copy; {new Date().getFullYear()} Core
+                                </p>
+                            </div>
+                        </div>
+                    )
+                }
             </div>
         </div>
     )
